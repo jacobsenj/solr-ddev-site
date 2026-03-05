@@ -8,13 +8,17 @@ if [[ -z "$EXT_SOLR_PLUGIN_NAME" ]]; then
   EXT_SOLR_PLUGIN_NAME="solr"
 fi
 
-if [ ! -d "packages/ext-$EXT_SOLR_PLUGIN_NAME" ];then
-  git clone git@github.com:TYPO3-Solr/ext-"$EXT_SOLR_PLUGIN_NAME".git packages/ext-"$EXT_SOLR_PLUGIN_NAME" \
-  || git clone https://github.com/TYPO3-Solr/ext-"$EXT_SOLR_PLUGIN_NAME".git packages/ext-"$EXT_SOLR_PLUGIN_NAME"
+if ! [[ "$EXT_SOLR_PLUGIN_NAME" == "solr" ]]; then
+    if [ ! -d "packages/ext-$EXT_SOLR_PLUGIN_NAME" ];then
+    git clone git@github.com:TYPO3-Solr/ext-"$EXT_SOLR_PLUGIN_NAME".git packages/ext-"$EXT_SOLR_PLUGIN_NAME" \
+    || git clone https://github.com/TYPO3-Solr/ext-"$EXT_SOLR_PLUGIN_NAME".git packages/ext-"$EXT_SOLR_PLUGIN_NAME"
+    else
+    echo "EXT:$EXT_SOLR_PLUGIN_NAME repo presents in packages/ext-$EXT_SOLR_PLUGIN_NAME."
+    echo "If needed, checkout the desired branch of ext-$EXT_SOLR_PLUGIN_NAME and update composer manually."
+    exit 0; # And don't checkout something on ddev restarts
+    fi
 else
-  echo "EXT:$EXT_SOLR_PLUGIN_NAME repo presents in packages/ext-$EXT_SOLR_PLUGIN_NAME."
-  echo "If needed, checkout the desired branch of ext-$EXT_SOLR_PLUGIN_NAME and update composer manually."
-  exit 0; # And don't checkout something on ddev restarts
+    git clone https://github.com/TYPO3-Solr/ext-"$EXT_SOLR_PLUGIN_NAME".git packages/ext-"$EXT_SOLR_PLUGIN_NAME"
 fi
 
 current_ddev_site_branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
